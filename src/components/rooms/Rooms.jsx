@@ -1,19 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useLanguage } from '../../i18n/LanguageProvider';
+import { useGetPublicRoomCategoriesQuery } from '../../store/websiteApi';
+import { API_BASE_URL } from '../../config/apiConfig';
 import './Rooms.css';
-
-const API_BASE_URL = (
-  import.meta.env.VITE_API_BASE_URL
-  || import.meta.env.VITE_BACKEND_BASE_URL
-  || ''
-).replace(/\/+$/, '');
-
-const normalizeCategoriesPayload = (payload) => {
-  if (Array.isArray(payload)) return payload;
-  if (Array.isArray(payload?.innerData)) return payload.innerData;
-  if (Array.isArray(payload?.data)) return payload.data;
-  return [];
-};
 
 const formatMoney = (value, language) => {
   const amount = Number(value || 0);
@@ -67,33 +56,8 @@ const resolveRoomImage = (image) => {
 export default function Rooms() {
   const { language } = useLanguage();
   const labels = roomLabels[language];
-  const [categories, setCategories] = useState([]);
-  const [status, setStatus] = useState('loading');
+  const { data: categories = [], isLoading, isError } = useGetPublicRoomCategoriesQuery();
   const [preview, setPreview] = useState(null);
-
-  useEffect(() => {
-    let alive = true;
-
-    fetch('/api/public/room-categories')
-      .then((response) => {
-        if (!response.ok) throw new Error('room_categories_failed');
-        return response.json();
-      })
-      .then((payload) => {
-        if (!alive) return;
-        setCategories(normalizeCategoriesPayload(payload));
-        setStatus('ready');
-      })
-      .catch(() => {
-        if (!alive) return;
-        setCategories([]);
-        setStatus('error');
-      });
-
-    return () => {
-      alive = false;
-    };
-  }, []);
 
   const selectRoomCategory = (category) => {
     window.dispatchEvent(new CustomEvent('select-room-category', { detail: { category } }));
@@ -139,16 +103,16 @@ export default function Rooms() {
         <h2>Safaringizga mos xona kategoriyasini tanlang</h2>
         <p>Ko‘rsatilgan narxlar chet ellik mehmonlar uchun bazadagi xona narxlari asosida chiqadi.</p>
       </div>
-      {status === 'loading' && (
+      {isLoading && (
         <div className="rooms-loader" role="status" aria-live="polite">
           <span />
           <p>Xonalar yuklanmoqda...</p>
         </div>
       )}
-      {status === 'error' && (
+      {isError && (
         <p className="rooms-notice">Xonalarni yuklashda xatolik yuz berdi. Iltimos, birozdan keyin qayta urinib ko‘ring.</p>
       )}
-      {status === 'ready' && (
+      {!isLoading && !isError && (
         <div className="room-grid">
           {categories.map((room) => (
           <article className="room-card" key={room.category}>

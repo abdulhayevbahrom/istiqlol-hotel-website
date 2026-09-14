@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useCreatePublicBookingMutation, useGetPublicRoomCategoriesQuery } from '../../store/websiteApi';
 import './Booking.css';
 
 const fallbackCategories = ['Standard', 'Deluxe', 'Family'];
@@ -16,20 +17,14 @@ const initialForm = {
   note: '',
 };
 
-const normalizeRoomsPayload = (payload) => {
-  if (Array.isArray(payload)) return payload;
-  if (Array.isArray(payload?.innerData)) return payload.innerData;
-  if (Array.isArray(payload?.data)) return payload.data;
-  return [];
-};
-
 export default function Booking() {
   const [form, setForm] = useState(initialForm);
   const [status, setStatus] = useState('idle');
-  const [roomCategories, setRoomCategories] = useState([]);
-  const [categoriesStatus, setCategoriesStatus] = useState('loading');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmation, setConfirmation] = useState(null);
+  const { data: roomCategoryData = [], isLoading: categoriesLoading, isError: categoriesError } = useGetPublicRoomCategoriesQuery();
+  const [createPublicBooking, { isLoading: isBookingSending }] = useCreatePublicBookingMutation();
+  const roomCategories = [...new Set(roomCategoryData.map((room) => String(room?.category || '').trim()).filter(Boolean))];
   const categories = roomCategories.length ? roomCategories : fallbackCategories;
   const nights = useMemo(() => {
     if (!form.checkIn || !form.checkOut) return 1;
@@ -38,38 +33,12 @@ export default function Booking() {
   }, [form.checkIn, form.checkOut]);
 
   useEffect(() => {
-    let alive = true;
-
-    fetch('/api/rooms')
-      .then((response) => {
-        if (!response.ok) throw new Error('rooms_failed');
-        return response.json();
-      })
-      .then((payload) => {
-        if (!alive) return;
-        const nextCategories = [...new Set(
-          normalizeRoomsPayload(payload)
-            .map((room) => String(room?.category || '').trim())
-            .filter(Boolean),
-        )];
-        setRoomCategories(nextCategories);
-        setForm((current) => ({
-          ...current,
-          roomType: current.roomType || nextCategories[0] || fallbackCategories[0],
-        }));
-        setCategoriesStatus('ready');
-      })
-      .catch(() => {
-        if (!alive) return;
-        setRoomCategories([]);
-        setForm((current) => ({ ...current, roomType: current.roomType || fallbackCategories[0] }));
-        setCategoriesStatus('fallback');
-      });
-
-    return () => {
-      alive = false;
-    };
-  }, []);
+    if (categoriesLoading) return;
+    setForm((current) => ({
+      ...current,
+      roomType: current.roomType || categories[0],
+    }));
+  }, [categoriesLoading, roomCategories.join('|')]);
 
   useEffect(() => {
     const handleRoomCategorySelect = (event) => {
@@ -111,14 +80,7 @@ export default function Booking() {
     event.preventDefault();
     setStatus('sending');
     try {
-      const response = await fetch('/api/public/booking', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, stayDays: nights, source: 'website' }),
-      });
-      const payload = await response.json().catch(() => null);
-      if (!response.ok) throw new Error(payload?.message || 'booking_failed');
-      const booking = payload?.innerData || null;
+      const booking = await createPublicBooking({ ...form, stayDays: nights }).unwrap();
       setConfirmation({
         guestName: `${form.firstname} ${form.lastname}`.trim(),
         phone: form.phone,
@@ -184,10 +146,10 @@ export default function Booking() {
               <div className="form-row"><label>Ism<input name="firstname" value={form.firstname} onChange={updateField} required/></label><label>Familiya<input name="lastname" value={form.lastname} onChange={updateField} required/></label></div>
               <div className="form-row"><label>Telefon<input name="phone" value={form.phone} onChange={updateField} placeholder="+998" required/></label><label>Email<input type="email" name="email" value={form.email} onChange={updateField} placeholder="hotel@example.com"/></label></div>
               <div className="form-row"><label>Kelish sanasi<input type="date" name="checkIn" value={form.checkIn} onChange={updateField} required/></label><label>Ketish sanasi<input type="date" name="checkOut" value={form.checkOut} onChange={updateField} required/></label></div>
-              <div className="form-row" id="booking-details"><label>Xona kategoriyasi<select name="roomType" value={form.roomType} onChange={updateField} disabled={categoriesStatus==='loading'}>{categories.map((category)=><option key={category} value={category}>{category}</option>)}</select></label><label>Mehmonlar<input type="number" min="1" max="6" name="guests" value={form.guests} onChange={updateField}/></label></div>
-              {categoriesStatus==='fallback'&&<p className="form-message">Kategoriyalar bazadan olinmadi, vaqtincha standart ro‘yxat ko‘rsatildi.</p>}
+              <div className="form-row" id="booking-details"><label>Xona kategoriyasi<select name="roomType" value={form.roomType} onChange={updateField} disabled={categoriesLoading}>{categories.map((category)=><option key={category} value={category}>{category}</option>)}</select></label><label>Mehmonlar<input type="number" min="1" max="6" name="guests" value={form.guests} onChange={updateField}/></label></div>
+              {categoriesError&&<p className="form-message">Kategoriyalar bazadan olinmadi, vaqtincha standart ro‘yxat ko‘rsatildi.</p>}
               <label>Izoh<textarea name="note" value={form.note} onChange={updateField} rows="4"/></label>
-              <div className="form-footer"><span>{nights} kunlik bron</span><button type="submit" disabled={status==='sending'}>{status==='sending'?'Yuborilmoqda...':'Bron yuborish'}</button></div>
+              <div className="form-footer"><span>{nights} kunlik bron</span><button type="submit" disabled={isBookingSending}>{isBookingSending?'Yuborilmoqda...':'Bron yuborish'}</button></div>
               {status==='offline'&&<p className="form-message">Hozir bronni yuborib bo‘lmadi. Iltimos, qayta urinib ko‘ring.</p>}
             </form>
           </div>
