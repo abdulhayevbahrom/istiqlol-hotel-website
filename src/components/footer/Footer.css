@@ -1,0 +1,1 @@
+.footer{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:28px clamp(18px,5vw,80px);background:#071c2e;color:rgba(255,255,255,.82)}.footer div{display:flex;align-items:center;gap:12px;color:#fff}.footer img{width:44px;height:44px;object-fit:contain}.footer p{margin:0}@media(max-width:900px){.footer{align-items:flex-start;flex-direction:column}}
