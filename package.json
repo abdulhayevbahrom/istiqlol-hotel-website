@@ -11,6 +11,8 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.12.0",
     "@vitejs/plugin-react": "latest",
+    "antd": "^6.6.5",
+    "dayjs": "^1.11.23",
     "react": "latest",
     "react-dom": "latest",
     "react-redux": "^9.3.0",

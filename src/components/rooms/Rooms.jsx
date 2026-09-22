@@ -3,6 +3,7 @@ import { useLanguage } from '../../i18n/LanguageProvider';
 import { useGetPublicRoomCategoriesQuery } from '../../store/websiteApi';
 import { API_BASE_URL } from '../../config/apiConfig';
 import './Rooms.css';
+import './RoomsHorizontal.css';
 
 const formatMoney = (value, language) => {
   const amount = Number(value || 0);
@@ -17,33 +18,30 @@ const formatMoney = (value, language) => {
   return `${amount.toLocaleString(locale)} ${currency}`;
 };
 
-const pluralizeRu = (value, forms) => {
-  const lastTwo = value % 100;
-  const last = value % 10;
-  if (lastTwo >= 11 && lastTwo <= 14) return forms[2];
-  if (last === 1) return forms[0];
-  if (last >= 2 && last <= 4) return forms[1];
-  return forms[2];
-};
-
-const formatRoomAvailability = (capacityValue, countValue, language) => {
-  const capacity = Number(capacityValue) || 1;
-  const count = Number(countValue) || 0;
-
-  if (language === 'ru') {
-    return `До ${capacity} ${pluralizeRu(capacity, ['гостя', 'гостей', 'гостей'])} · ${count} ${pluralizeRu(count, ['номер', 'номера', 'номеров'])}`;
-  }
-  if (language === 'en') {
-    return `Up to ${capacity} ${capacity === 1 ? 'guest' : 'guests'} · ${count} ${count === 1 ? 'room' : 'rooms'}`;
-  }
-  return `${capacity} mehmon uchun · ${count} ta xona`;
-};
-
 const roomLabels = {
   uz: { perNight: '1 kecha uchun', viewPhotos: 'rasmlarini ko‘rish', roomView: 'ko‘rinishi', photos: 'rasmlari', photo: 'rasmi', close: 'Yopish', previous: 'Oldingi rasm', next: 'Keyingi rasm', image: 'rasmni ko‘rish' },
   ru: { perNight: 'за 1 ночь', viewPhotos: 'посмотреть фотографии', roomView: 'вид номера', photos: 'фотографии', photo: 'фотография', close: 'Закрыть', previous: 'Предыдущее фото', next: 'Следующее фото', image: 'открыть фото' },
   en: { perNight: 'per night', viewPhotos: 'view photos', roomView: 'room view', photos: 'photos', photo: 'photo', close: 'Close', previous: 'Previous photo', next: 'Next photo', image: 'view image' },
 };
+
+const roomAmenities = [
+  ['wifi', 'Wi‑Fi'],
+  ['bell', '24/7 reception'],
+  ['parking', 'Avtoturargoh'],
+  ['laundry', 'Kir yuvish'],
+  ['breakfast', 'Shved stoli'],
+];
+
+function AmenityIcon({ name }) {
+  const paths = {
+    wifi: <><path d="M5 12.5a11 11 0 0 1 14 0"/><path d="M8.5 16a6 6 0 0 1 7 0"/><circle cx="12" cy="19" r="1"/></>,
+    bell: <><path d="M5 16h14M7 16v-4a5 5 0 0 1 10 0v4M4 20h16M12 7V4"/></>,
+    parking: <><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 17V7h4a3 3 0 0 1 0 6H9"/></>,
+    laundry: <><rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="12" cy="14" r="4"/><path d="M8 7h.01M12 7h4"/></>,
+    breakfast: <><path d="M4 10h16M6 10a6 6 0 0 1 12 0M3 14h18M7 18h10"/></>,
+  };
+  return <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">{paths[name]}</svg>;
+}
 
 const resolveRoomImage = (image) => {
   const src = String(image || '').trim();
@@ -120,11 +118,20 @@ export default function Rooms() {
               <img src={resolveRoomImage(room.images?.[0])} alt={`${room.category}: ${labels.roomView}`} />
               <span>Rasmlarni ko‘rish</span>
             </button>
-            <div>
-              <span>{formatRoomAvailability(room.capacity, room.count, language)}</span>
-              <h3>{room.category}</h3>
-              <strong>{formatMoney(room.minForeignPrice, language)} <small>{labels.perNight}</small></strong>
-              <button type="button" onClick={() => selectRoomCategory(room.category)}>Bron qilish</button>
+            <div className="room-card-body">
+              <div className="room-card-copy">
+                <h3>{room.category}</h3>
+                <span>{room.capacity} kishilik</span>
+              </div>
+              <div className="room-card-action">
+                <strong>{formatMoney(room.minForeignPrice, language)} <small>{labels.perNight}</small></strong>
+                <button type="button" onClick={() => selectRoomCategory(room.category)}>Bron qilish</button>
+              </div>
+            </div>
+            <div className="room-card-amenities">
+              {roomAmenities.map(([icon, label]) => (
+                <small key={label}><AmenityIcon name={icon}/>{label}</small>
+              ))}
             </div>
           </article>
           ))}

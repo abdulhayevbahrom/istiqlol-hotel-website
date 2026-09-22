@@ -6,6 +6,8 @@ import ContactsPage from './pages/ContactsPage';
 import HomePage from './pages/HomePage';
 import ServicesPage from './pages/ServicesPage';
 import SpecialOffersPage from './pages/SpecialOffersPage';
+import BookingPage from './pages/BookingPage';
+import BookingConfirmationPage from './pages/BookingConfirmationPage';
 
 function ScrollToHash() {
   const { hash, pathname } = useLocation();
@@ -35,6 +37,8 @@ export default function App() {
         <Route path="/services" element={<ServicesPage />} />
         <Route path="/special-offers" element={<SpecialOffersPage />} />
         <Route path="/contacts" element={<ContactsPage />} />
+        <Route path="/booking" element={<BookingPage />} />
+        <Route path="/booking-confirmation/:token" element={<BookingConfirmationPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>

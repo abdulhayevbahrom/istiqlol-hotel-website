@@ -1,7 +1,10 @@
-const removeTrailingSlash = (value) => String(value || '').trim().replace(/\/+$/, '');
+const removeTrailingSlash = (value) =>
+  String(value || "")
+    .trim()
+    .replace(/\/+$/, "");
 
 const backendBaseUrl = removeTrailingSlash(
-  import.meta.env.VITE_MAIN_API_BASE_URL || 'https://istiqlol-hotel-b.my-hotels.uz',
+  import.meta.env.VITE_MAIN_API_BASE_URL || "http://localhost:8343/api",
 );
 
 export const API_BASE_URL = backendBaseUrl;

@@ -16,6 +16,17 @@ export const websiteApi = createApi({
       query: () => '/public/room-categories',
       transformResponse: normalizeList,
     }),
+    getPublicRooms: builder.query({
+      query: () => '/rooms',
+      transformResponse: normalizeList,
+    }),
+    getPublicRoomAvailability: builder.query({
+      query: ({ checkIn, checkOut }) => ({
+        url: '/public/room-availability',
+        params: { checkIn, checkOut },
+      }),
+      transformResponse: (payload) => payload?.innerData || payload?.data || payload || {},
+    }),
     createPublicBooking: builder.mutation({
       query: (booking) => ({
         url: '/public/booking',
@@ -24,10 +35,17 @@ export const websiteApi = createApi({
       }),
       transformResponse: (payload) => payload?.innerData || payload?.data || payload,
     }),
+    getPublicBookingConfirmation: builder.query({
+      query: (token) => `/public/booking/${token}`,
+      transformResponse: (payload) => payload?.innerData || payload?.data || payload,
+    }),
   }),
 });
 
 export const {
   useGetPublicRoomCategoriesQuery,
+  useGetPublicRoomsQuery,
+  useGetPublicRoomAvailabilityQuery,
   useCreatePublicBookingMutation,
+  useGetPublicBookingConfirmationQuery,
 } = websiteApi;

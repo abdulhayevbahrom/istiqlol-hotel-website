@@ -214,7 +214,7 @@ function translateTree(root, language) {
   const nodes = [];
   while (walker.nextNode()) nodes.push(walker.currentNode);
   nodes.forEach((node) => {
-    if (node.parentElement?.closest('script, style')) return;
+    if (node.parentElement?.closest('script, style, [data-no-translate]')) return;
     if (!originalText.has(node)) originalText.set(node, node.nodeValue);
     const source = originalText.get(node);
     const trimmed = source.trim();
@@ -224,6 +224,7 @@ function translateTree(root, language) {
   });
 
   root.querySelectorAll?.('[aria-label], [title], [placeholder], img[alt]').forEach((element) => {
+    if (element.closest('[data-no-translate]')) return;
     if (!originalAttributes.has(element)) originalAttributes.set(element, {});
     const saved = originalAttributes.get(element);
     ['aria-label', 'title', 'placeholder', 'alt'].forEach((attribute) => {

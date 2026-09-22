@@ -23,7 +23,7 @@ export default function Header() {
             <Link to="/about#restaurant">Restoran</Link>
           </div>
         </div>
-        <Link to="/#booking">Bron</Link>
+        <NavLink to="/booking">Bron</NavLink>
         <NavLink to="/contacts">Aloqa</NavLink>
       </nav>
       <label className="language-select">
