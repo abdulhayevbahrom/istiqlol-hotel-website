@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { DatePicker } from 'antd';
 import dayjs from 'dayjs';
+import { useLanguage } from '../../i18n/LanguageProvider';
 import { useCreatePublicBookingMutation, useGetPublicRoomAvailabilityQuery, useGetPublicRoomCategoriesQuery, useGetPublicRoomsQuery } from '../../store/websiteApi';
 import { API_BASE_URL } from '../../config/apiConfig';
 import './Booking.css';
@@ -71,8 +72,15 @@ const guestLimits = {
   children: { min: 0, max: 8 },
   rooms: { min: 1, max: 50 },
 };
+const bookingCopy = {
+  uz: { room: 'xona', adult: 'katta yoshli', child: 'bola', adults: 'Kattalar', adultHint: '13 yosh va undan katta', children: 'Bolalar', childHint: '0–12 yosh', rooms: 'Xonalar', roomHint: 'Kerakli xona soni', done: 'Tayyor', occupied: (used, max) => `${used} / ${max} ta joy band`, addRoom: ' · Ko‘proq mehmon uchun xona qo‘shing', capacity: (count) => `${count} kishilik`, selectedRoom: (category, capacity, quantity) => `${category} (${capacity} kishilik) × ${quantity}`, roomCount: (count) => `${count} xona`, adultCount: (count) => `${count} katta yoshli`, guestSummary: (adults, children) => `${adults} katta yoshli · ${children} bola`, roomDetail: (capacity, quantity) => `${capacity} kishilik · ${quantity} ta xona`, nights: (count) => `${count} kecha`, duration: (count) => `${count} kunlik bron` },
+  ru: { room: 'номер.', adult: 'взрослых', child: 'детей', adults: 'Взрослые', adultHint: '13 лет и старше', children: 'Дети', childHint: '0–12 лет', rooms: 'Номера', roomHint: 'Количество номеров', done: 'Готово', occupied: (used, max) => `Занято ${used} из ${max} мест`, addRoom: ' · Добавьте номер для большего числа гостей', capacity: (count) => `На ${count} чел.`, selectedRoom: (category, capacity, quantity) => `${category} (на ${capacity} чел.) × ${quantity}`, roomCount: (count) => `${count} ном.`, adultCount: (count) => `${count} взрослых`, guestSummary: (adults, children) => `${adults} взрослых · ${children} детей`, roomDetail: (capacity, quantity) => `На ${capacity} чел. · ${quantity} ном.`, nights: (count) => `${count} ноч.`, duration: (count) => `Бронирование на ${count} дн.` },
+  en: { room: 'room(s)', adult: 'adult(s)', child: 'child(ren)', adults: 'Adults', adultHint: 'Ages 13 and over', children: 'Children', childHint: 'Ages 0–12', rooms: 'Rooms', roomHint: 'Number of rooms', done: 'Done', occupied: (used, max) => `${used} of ${max} places occupied`, addRoom: ' · Add a room for more guests', capacity: (count) => `Sleeps ${count}`, selectedRoom: (category, capacity, quantity) => `${category} (sleeps ${capacity}) × ${quantity}`, roomCount: (count) => `${count} room(s)`, adultCount: (count) => `${count} adult(s)`, guestSummary: (adults, children) => `${adults} adult(s) · ${children} child(ren)`, roomDetail: (capacity, quantity) => `Sleeps ${capacity} · ${quantity} room(s)`, nights: (count) => `${count} night(s)`, duration: (count) => `${count}-night booking` },
+};
 
 export default function Booking({ standalone = false }) {
+  const { language } = useLanguage();
+  const copy = bookingCopy[language] || bookingCopy.uz;
   const navigate = useNavigate();
   const location = useLocation();
   const bookingState = standalone ? location.state : null;
@@ -321,6 +329,7 @@ export default function Booking({ standalone = false }) {
         || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
       const booking = await createPublicBooking({
         ...form,
+        language,
         bookingRequestId,
         stayDays: nights,
         roomCount: guestSelection.rooms,
@@ -383,17 +392,17 @@ export default function Booking({ standalone = false }) {
           aria-controls="booking-guests-picker"
           onClick={() => setIsGuestPickerOpen((open) => !open)}
         >
-          <span><b data-no-translate>{guestSelection.rooms}</b> xona</span>
+          <span><b>{guestSelection.rooms}</b> {copy.room}</span>
           <i aria-hidden="true">·</i>
-          <span><b data-no-translate>{guestSelection.adults}</b> katta yoshli</span>
-          {guestSelection.children > 0 && <span>· <b data-no-translate>{guestSelection.children}</b> bola</span>}
+          <span><b>{guestSelection.adults}</b> {copy.adult}</span>
+          {guestSelection.children > 0 && <span>· <b>{guestSelection.children}</b> {copy.child}</span>}
         </button>
         {isGuestPickerOpen && (
           <div className="booking-guests-picker" id="booking-guests-picker" data-no-translate>
             {[
-              ['adults', 'Kattalar', '13 yosh va undan katta'],
-              ['children', 'Bolalar', '0–12 yosh'],
-              ['rooms', 'Xonalar', 'Kerakli xona soni'],
+              ['adults', copy.adults, copy.adultHint],
+              ['children', copy.children, copy.childHint],
+              ['rooms', copy.rooms, copy.roomHint],
             ].map(([field, label, hint]) => (
               <div className="booking-guests-row" key={field}>
                 <span className="booking-guests-label"><strong>{label}</strong><small>{hint}</small></span>
@@ -418,10 +427,10 @@ export default function Booking({ standalone = false }) {
               </div>
             ))}
             <p className={`booking-capacity-note${totalSelectedGuests >= maxGuestsForSelection ? ' full' : ''}`}>
-              {totalSelectedGuests} / {maxGuestsForSelection} ta joy band
-              {totalSelectedGuests >= maxGuestsForSelection && guestSelection.rooms < roomLimit ? ' · Ko‘proq mehmon uchun xona qo‘shing' : ''}
+              {copy.occupied(totalSelectedGuests, maxGuestsForSelection)}
+              {totalSelectedGuests >= maxGuestsForSelection && guestSelection.rooms < roomLimit ? copy.addRoom : ''}
             </p>
-            <button className="booking-guests-done" type="button" onClick={() => setIsGuestPickerOpen(false)}>Tayyor</button>
+            <button className="booking-guests-done" type="button" onClick={() => setIsGuestPickerOpen(false)}>{copy.done}</button>
           </div>
         )}
       </div>
@@ -482,7 +491,7 @@ export default function Booking({ standalone = false }) {
                         </span>
                         <span className="booking-room-copy">
                           <strong>{room.category}</strong>
-                          <small className="booking-room-occupancy">{room.capacity} kishilik</small>
+                          <small className="booking-room-occupancy" data-no-translate>{copy.capacity(room.capacity)}</small>
                         </span>
                         <span className="booking-room-price">
                           <strong data-no-translate>{formatPrice(getRoomPrice(room))}</strong>
@@ -504,7 +513,7 @@ export default function Booking({ standalone = false }) {
                 </div>
                 <aside className="booking-summary">
                   <strong className="booking-summary-total" data-no-translate>{formatPrice(bookingTotal)}</strong>
-                  <span>{nights} kecha</span>
+                  <span data-no-translate>{copy.nights(nights)}</span>
                   <hr />
                   <h4>Sanalar</h4>
                   <DatePicker.RangePicker
@@ -517,11 +526,11 @@ export default function Booking({ standalone = false }) {
                     onChange={updateBookingRange}
                   />
                   <h4>Mehmonlar</h4>
-                  <p><b>{selectedRoomCount} xona</b><i>·</i><b>{guestSelection.adults} katta yoshli</b></p>
+                  <p data-no-translate><b>{copy.roomCount(selectedRoomCount)}</b><i>·</i><b>{copy.adultCount(guestSelection.adults)}</b></p>
                   {selectedEntries.length === 0 && <div className="booking-summary-room"><span>Xona tanlanmagan</span><strong>0 UZS</strong></div>}
                   {selectedEntries.map(({ room, quantity }) => (
                     <div className="booking-summary-room" key={room.optionKey}>
-                      <span data-no-translate>{room.category} ({room.capacity} kishilik) × {quantity}</span>
+                      <span data-no-translate>{copy.selectedRoom(room.category, room.capacity, quantity)}</span>
                       <strong data-no-translate>{formatPrice(getRoomPrice(room) * quantity * nights)}</strong>
                     </div>
                   ))}
@@ -551,17 +560,17 @@ export default function Booking({ standalone = false }) {
                     <h4>Tanlangan xonalar</h4>
                     {selectedEntries.map(({ room, quantity }) => (
                       <div className="booking-selected-detail-row" key={room.optionKey}>
-                        <span><strong>{room.category}</strong><small>{room.capacity} kishilik · {quantity} ta xona</small></span>
+                        <span><strong>{room.category}</strong><small data-no-translate>{copy.roomDetail(room.capacity, quantity)}</small></span>
                         <b data-no-translate>{formatPrice(getRoomPrice(room) * quantity * nights)}</b>
                       </div>
                     ))}
                     <div className="booking-selected-guests">
                       <span>Mehmonlar</span>
-                      <strong>{guestSelection.adults} katta yoshli · {guestSelection.children} bola</strong>
+                      <strong data-no-translate>{copy.guestSummary(guestSelection.adults, guestSelection.children)}</strong>
                     </div>
                   </div>
                   <label>Izoh<textarea name="note" value={form.note} onChange={updateField} rows="4"/></label>
-                  <div className="form-footer"><span>{nights} kunlik bron</span><button type="submit" className="booking-submit-button" aria-busy={status === 'sending' || isBookingSending} disabled={status === 'sending' || isBookingSending || !form.roomType || totalSelectedGuests > maxGuestsForSelection}>{status === 'sending' || isBookingSending ? <><i className="booking-submit-spinner" aria-hidden="true"/>Yuborilmoqda...</> : 'Bron qilish'}</button></div>
+                  <div className="form-footer"><span data-no-translate>{copy.duration(nights)}</span><button type="submit" className="booking-submit-button" aria-busy={status === 'sending' || isBookingSending} disabled={status === 'sending' || isBookingSending || !form.roomType || totalSelectedGuests > maxGuestsForSelection}>{status === 'sending' || isBookingSending ? <><i className="booking-submit-spinner" aria-hidden="true"/>Yuborilmoqda...</> : 'Bron qilish'}</button></div>
                   {status==='offline'&&<p className="form-message">Hozir bronni yuborib bo‘lmadi. Iltimos, qayta urinib ko‘ring.</p>}
                   {status==='past-date'&&<p className="form-message">Kelish sanasi bugungi sanadan oldin bo‘lishi mumkin emas.</p>}
                   {status==='invalid-dates'&&<p className="form-message">Ketish sanasi kelish sanasidan keyin bo‘lishi kerak.</p>}

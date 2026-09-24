@@ -19,9 +19,9 @@ const formatMoney = (value, language) => {
 };
 
 const roomLabels = {
-  uz: { perNight: '1 kecha uchun', viewPhotos: 'rasmlarini ko‘rish', roomView: 'ko‘rinishi', photos: 'rasmlari', photo: 'rasmi', close: 'Yopish', previous: 'Oldingi rasm', next: 'Keyingi rasm', image: 'rasmni ko‘rish' },
-  ru: { perNight: 'за 1 ночь', viewPhotos: 'посмотреть фотографии', roomView: 'вид номера', photos: 'фотографии', photo: 'фотография', close: 'Закрыть', previous: 'Предыдущее фото', next: 'Следующее фото', image: 'открыть фото' },
-  en: { perNight: 'per night', viewPhotos: 'view photos', roomView: 'room view', photos: 'photos', photo: 'photo', close: 'Close', previous: 'Previous photo', next: 'Next photo', image: 'view image' },
+  uz: { perNight: '1 kecha uchun', viewPhotos: 'rasmlarini ko‘rish', roomView: 'ko‘rinishi', photos: 'rasmlari', photo: 'rasmi', close: 'Yopish', previous: 'Oldingi rasm', next: 'Keyingi rasm', image: 'rasmni ko‘rish', capacity: (count) => `${count} kishilik` },
+  ru: { perNight: 'за 1 ночь', viewPhotos: 'посмотреть фотографии', roomView: 'вид номера', photos: 'фотографии', photo: 'фотография', close: 'Закрыть', previous: 'Предыдущее фото', next: 'Следующее фото', image: 'открыть фото', capacity: (count) => `На ${count} чел.` },
+  en: { perNight: 'per night', viewPhotos: 'view photos', roomView: 'room view', photos: 'photos', photo: 'photo', close: 'Close', previous: 'Previous photo', next: 'Next photo', image: 'view image', capacity: (count) => `Sleeps ${count}` },
 };
 
 const roomAmenities = [
@@ -121,7 +121,7 @@ export default function Rooms() {
             <div className="room-card-body">
               <div className="room-card-copy">
                 <h3>{room.category}</h3>
-                <span>{room.capacity} kishilik</span>
+                <span data-no-translate>{labels.capacity(room.capacity)}</span>
               </div>
               <div className="room-card-action">
                 <strong>{formatMoney(room.minForeignPrice, language)} <small>{labels.perNight}</small></strong>

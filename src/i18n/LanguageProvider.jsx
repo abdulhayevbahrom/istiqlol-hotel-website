@@ -185,6 +185,52 @@ Object.assign(translations.en, {
   'Afsonalar vodisyi parki': 'Valley of Legends Park',
 });
 
+Object.assign(translations.ru, {
+  'Bosh sahifa': 'Главная', '← Bosh sahifa': '← Главная', 'Mehmon rezidentligi': 'Резидентство гостя',
+  'O‘zbekiston rezidenti': 'Резидент Узбекистана', 'Mahalliy tarif': 'Местный тариф', 'Norezident': 'Нерезидент',
+  'Chet elliklar tarifi': 'Тариф для иностранцев', 'Mavjud xonalar': 'Доступные номера', 'Xonangizni tanlang': 'Выберите номер',
+  'PMS bazasidan bo‘sh xona va narxlarni olib bo‘lmadi. Iltimos, qayta urinib ko‘ring.': 'Не удалось получить свободные номера и цены из PMS. Попробуйте ещё раз.',
+  'Tanlangan sanalarda bo‘sh xona qolmagan.': 'На выбранные даты свободных номеров нет.', 'Sanalar': 'Даты',
+  'Xona tanlanmagan': 'Номер не выбран', 'Jami': 'Итого', 'Avval xona tanlang': 'Сначала выберите номер',
+  'Tanlangan xonalarda mehmonlar uchun joy yetarli emas': 'В выбранных номерах недостаточно мест для гостей',
+  'Mijoz ma’lumotlari': 'Данные гостя', 'Bronni rasmiylashtirish': 'Оформление бронирования', 'Email': 'Email',
+  'Tanlangan xonalar': 'Выбранные номера', 'Bron raqami': 'Номер брони', 'Xona kategoriyasi': 'Категория номера',
+  'Bron qog‘ozi emailingizga yuborildi.': 'Подтверждение брони отправлено на вашу почту.',
+  'Email yuborilmadi. Bron havolasini saqlab qo‘ying.': 'Письмо не отправлено. Сохраните ссылку на бронь.',
+  'Bron qog‘ozini ochish': 'Открыть подтверждение', 'Bosh sahifaga qaytish': 'Вернуться на главную',
+  'Kelish sanasi bugungi sanadan oldin bo‘lishi mumkin emas.': 'Дата заезда не может быть раньше сегодняшней.',
+  'Ketish sanasi kelish sanasidan keyin bo‘lishi kerak.': 'Дата выезда должна быть позже даты заезда.',
+  'Wi‑Fi': 'Wi‑Fi', '24/7 reception': 'Стойка 24/7', 'Shved stoli': 'Шведский стол',
+  'Kattalar': 'Взрослые', '13 yosh va undan katta': '13 лет и старше', 'Bolalar': 'Дети', '0–12 yosh': '0–12 лет',
+  'Kerakli xona soni': 'Количество номеров', 'Tayyor': 'Готово',
+  'Bron tasdiq qog‘ozi': 'Подтверждение бронирования', 'Bron ma’lumotlari yuklanmoqda...': 'Данные брони загружаются...',
+  'Bron topilmadi': 'Бронь не найдена', 'Havola noto‘g‘ri yoki yaroqsiz.': 'Ссылка неверна или недействительна.',
+  'Bron tasdiqlandi': 'Бронь подтверждена', 'Rezidentlik': 'Резидентство', 'PDF yuklab olish': 'Скачать PDF',
+});
+
+Object.assign(translations.en, {
+  'Bosh sahifa': 'Home', '← Bosh sahifa': '← Home', 'Mehmon rezidentligi': 'Guest residency',
+  'O‘zbekiston rezidenti': 'Uzbekistan resident', 'Mahalliy tarif': 'Local rate', 'Norezident': 'Non-resident',
+  'Chet elliklar tarifi': 'International guest rate', 'Mavjud xonalar': 'Available rooms', 'Xonangizni tanlang': 'Choose your room',
+  'PMS bazasidan bo‘sh xona va narxlarni olib bo‘lmadi. Iltimos, qayta urinib ko‘ring.': 'Available rooms and prices could not be loaded from the PMS. Please try again.',
+  'Tanlangan sanalarda bo‘sh xona qolmagan.': 'No rooms are available for the selected dates.', 'Sanalar': 'Dates',
+  'Xona tanlanmagan': 'No room selected', 'Jami': 'Total', 'Avval xona tanlang': 'Select a room first',
+  'Tanlangan xonalarda mehmonlar uchun joy yetarli emas': 'The selected rooms do not have enough capacity for all guests',
+  'Mijoz ma’lumotlari': 'Guest details', 'Bronni rasmiylashtirish': 'Complete your booking', 'Email': 'Email',
+  'Tanlangan xonalar': 'Selected rooms', 'Bron raqami': 'Booking reference', 'Xona kategoriyasi': 'Room category',
+  'Bron qog‘ozi emailingizga yuborildi.': 'Your booking confirmation has been emailed to you.',
+  'Email yuborilmadi. Bron havolasini saqlab qo‘ying.': 'The email was not sent. Save your booking link.',
+  'Bron qog‘ozini ochish': 'Open booking confirmation', 'Bosh sahifaga qaytish': 'Return home',
+  'Kelish sanasi bugungi sanadan oldin bo‘lishi mumkin emas.': 'Check-in cannot be earlier than today.',
+  'Ketish sanasi kelish sanasidan keyin bo‘lishi kerak.': 'Check-out must be later than check-in.',
+  'Wi‑Fi': 'Wi‑Fi', '24/7 reception': '24/7 reception', 'Shved stoli': 'Buffet breakfast',
+  'Kattalar': 'Adults', '13 yosh va undan katta': 'Ages 13 and over', 'Bolalar': 'Children', '0–12 yosh': 'Ages 0–12',
+  'Kerakli xona soni': 'Number of rooms', 'Tayyor': 'Done',
+  'Bron tasdiq qog‘ozi': 'Booking confirmation', 'Bron ma’lumotlari yuklanmoqda...': 'Loading booking details...',
+  'Bron topilmadi': 'Booking not found', 'Havola noto‘g‘ri yoki yaroqsiz.': 'The link is invalid or has expired.',
+  'Bron tasdiqlandi': 'Booking confirmed', 'Rezidentlik': 'Residency', 'PDF yuklab olish': 'Download PDF',
+});
+
 const originalText = new WeakMap();
 const originalAttributes = new WeakMap();
 
@@ -198,11 +244,17 @@ function translateValue(value, language) {
       [/^(\d+) kunlik bron$/, 'Бронирование на $1 дн.'], [/^(\d+) mehmon gacha · (\d+) ta xona$/, 'До $1 гостей · $2 номеров'],
       [/^(\d+)-rasmni ko‘rsatish$/, 'Показать фото $1'], [/^(\d+)-rasmni ko‘rish$/, 'Открыть фото $1'],
       [/^(.+) rasmlarini ko‘rish$/, 'Посмотреть фото: $1'], [/^(.+) ko‘rinishi$/, 'Вид номера: $1'], [/^(.+) rasmlari$/, 'Фото: $1'], [/^(.+) rasmi$/, 'Фото: $1'],
+      [/^(\d+) kishilik$/, 'На $1 чел.'], [/^(\d+) kecha$/, '$1 ноч.'], [/^(\d+) xona$/, '$1 ном.'], [/^(\d+) ta xona$/, '$1 ном.'],
+      [/^(\d+) katta yoshli$/, '$1 взрослых'], [/^(\d+) bola$/, '$1 детей'], [/^(\d+) \/ (\d+) ta joy band$/, 'Занято $1 из $2 мест'],
+      [/^(.+) \((\d+) kishilik\) × (\d+)$/, '$1 (на $2 чел.) × $3'], [/^(\d+) kishilik · (\d+) ta xona$/, 'На $1 чел. · $2 ном.'],
     ]
     : [
       [/^(\d+) kunlik bron$/, '$1-night booking'], [/^(\d+) mehmon gacha · (\d+) ta xona$/, 'Up to $1 guests · $2 rooms'],
       [/^(\d+)-rasmni ko‘rsatish$/, 'Show image $1'], [/^(\d+)-rasmni ko‘rish$/, 'View image $1'],
       [/^(.+) rasmlarini ko‘rish$/, 'View photos of $1'], [/^(.+) ko‘rinishi$/, '$1 room view'], [/^(.+) rasmlari$/, '$1 photos'], [/^(.+) rasmi$/, '$1 photo'],
+      [/^(\d+) kishilik$/, 'Sleeps $1'], [/^(\d+) kecha$/, '$1 night(s)'], [/^(\d+) xona$/, '$1 room(s)'], [/^(\d+) ta xona$/, '$1 room(s)'],
+      [/^(\d+) katta yoshli$/, '$1 adult(s)'], [/^(\d+) bola$/, '$1 child(ren)'], [/^(\d+) \/ (\d+) ta joy band$/, '$1 of $2 places occupied'],
+      [/^(.+) \((\d+) kishilik\) × (\d+)$/, '$1 (sleeps $2) × $3'], [/^(\d+) kishilik · (\d+) ta xona$/, 'Sleeps $1 · $2 room(s)'],
     ];
   for (const [pattern, replacement] of rules) if (pattern.test(value)) return value.replace(pattern, replacement);
   return value;
